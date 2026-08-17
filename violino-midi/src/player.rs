@@ -145,13 +145,23 @@ pub fn render(events: &[TimedEvent], opts: &RenderOptions) -> Vec<f32> {
             ev += 1;
         }
 
-        // Gesture targets from the current state.
-        let (vel_target, f0_target) = match held.last() {
+        // Gesture targets from the current state. Real players raise bow
+        // speed and pressure with register (a shorter string needs more of
+        // both to lock into Helmholtz motion instead of surface sound an
+        // octave up); without this, notes above ~C5 crack.
+        let mut f0_target = f0.value; // bow lifted: pitch holds for the decay
+        let (vel_target, pres_bonus) = match held.last() {
             Some(&key) => {
                 let f = key_to_freq(key) * (bend_semitones / 12.0).exp2();
-                (0.05 + 0.30 * expression, f)
+                // Schelleng: the minimum bow force for Helmholtz motion
+                // rises both with register and with bow speed, so raise
+                // pressure only — raising speed as well would move the
+                // required force further away.
+                let register = (f / 440.0).log2().max(0.0); // octaves above A4
+                f0_target = f;
+                (0.05 + 0.30 * expression, 0.25 * register)
             }
-            None => (0.0, f0.value), // bow lifts; pitch holds for the decay
+            None => (0.0, 0.0),
         };
         // Portamento widens the f0 smoothing time constant (20 ms..0.25 s).
         f0.coeff = (-1.0 / ((0.02 + 0.23 * portamento_raw) * sr)).exp();
@@ -162,7 +172,7 @@ pub fn render(events: &[TimedEvent], opts: &RenderOptions) -> Vec<f32> {
 
         let f = f0.tick(f0_target) * (1.0 + vib);
         let vel = velocity.tick(vel_target) * (1.0 + 0.008 * noise.next());
-        let pres = pressure.tick(0.40 + 0.35 * expression);
+        let pres = pressure.tick((0.40 + 0.35 * expression + pres_bonus).min(0.95));
         *sample = violin.tick(f, vel, pres);
     }
     out

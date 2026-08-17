@@ -54,7 +54,17 @@ def notes_to_midi(notes, path):
     tempo = 500000  # 120 BPM: 1 tick = 1/960 s
     track.append(mido.MetaMessage("set_tempo", tempo=tempo, time=0))
     events = []
-    for onset, offset, pitch in notes:
+    for i, (onset, offset, pitch) in enumerate(notes):
+        # Bach10 offsets include the decay and overlap the next note by up
+        # to ~1 s. Clip: keep a small overlap for legato between different
+        # pitches, but separate repeated pitches so note on/off pairs nest
+        # correctly and re-articulations survive.
+        if i + 1 < len(notes):
+            next_onset, _, next_pitch = notes[i + 1]
+            if next_pitch == pitch:
+                offset = min(offset, next_onset - 0.03)
+            else:
+                offset = min(offset, next_onset + 0.02)
         events.append((onset, 1, pitch))
         events.append((offset, 0, pitch))
     # sort by time; note-offs first on ties so legato overlaps stay sane
