@@ -1,6 +1,6 @@
 [workspace]
-members = ["violino-core", "violino-py"]
-default-members = ["violino-core"]
+members = ["violino-core", "violino-midi", "violino-py"]
+default-members = ["violino-core", "violino-midi"]
 resolver = "2"
 
 [workspace.package]

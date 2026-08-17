@@ -1,0 +1,10 @@
+[package]
+name = "violino-midi"
+description = "Standard MIDI File player for violino: notes + CC streams to bowing gestures"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+violino-core = { path = "../violino-core" }

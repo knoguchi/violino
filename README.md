@@ -29,22 +29,27 @@ the layer that turns MIDI notes and CC curves into plausible bowing gestures
   modal body. Zero dependencies, no allocation on the audio path.
 - `violino-py` — PyO3 bindings (build with `maturin develop`), for research
   iteration, calibration, and analysis-by-synthesis experiments.
-- `violino-midi` (planned) — Standard MIDI File player: notes + CC streams
-  (SWAM-compatible mapping) to control curves, so the same MIDI file can
-  drive both violino and SWAM for A/B comparison.
+- `violino-midi` — Standard MIDI File player: notes + CC streams to bowing
+  gestures. CC defaults follow SWAM Violin's factory mapping (CC11
+  expression, CC1 vibrato depth, CC19 vibrato rate, CC5 portamento, pitch
+  bend), so the same MIDI file can drive both violino and SWAM for A/B
+  comparison. Zero-dependency SMF parser included.
 
 ## Quick start
 
 ```bash
-cargo test                      # includes a Helmholtz-motion pitch check
+cargo test                      # Helmholtz-motion and MIDI end-to-end checks
 cargo run --example phrase      # renders violino_phrase.wav (7 s legato demo)
+
+cargo run -p violino-midi --example gen_demo   # writes demo.mid
+cargo run -p violino-midi -- demo.mid demo.wav # render any SMF to WAV
 ```
 
 ## Roadmap
 
-1. **MIDI file renderer** (`violino-midi`): note + CC to gesture curves,
-   CC mapping compatible with SWAM Violin's published MIDI controls, so one
-   MIDI performance can drive both engines for honest comparison.
+1. ~~**MIDI file renderer** (`violino-midi`)~~ — done (minimal): SMF
+   format 0/1, tempo map, mono legato player, SWAM-compatible CC defaults.
+   Remaining: bow position / bow noise CCs, key switches, MPE.
 2. **Measured body**: replace the hand-tuned mode table with modes fitted to
    published violin bridge-admittance / impulse-response measurements. The
    largest realism win per unit of effort.

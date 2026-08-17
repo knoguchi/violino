@@ -177,6 +177,13 @@ name = "violino-core"
 version = "0.1.0"
 
 [[package]]
+name = "violino-midi"
+version = "0.1.0"
+dependencies = [
+ "violino-core",
+]
+
+[[package]]
 name = "violino-py"
 version = "0.1.0"
 dependencies = [
