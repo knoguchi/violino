@@ -5,3 +5,6 @@ __pycache__/
 *.pyc
 .venv/
 dist/
+/data/
+/tmp/
+demo.mid

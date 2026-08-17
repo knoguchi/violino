@@ -58,6 +58,11 @@ cargo run -p violino-midi -- demo.mid demo.wav # render any SMF to WAV
 4. **Calibration pipeline**: analysis-by-synthesis against real violin
    recordings — optimize control curves per recording, then model parameters
    across recordings. The optimizer plays the role of the skilled player.
+   First piece exists: `tools/compare_real.py` renders the ground-truth
+   notes of a Bach10 piece (real performance timing) and reports log-mel
+   spectral distance and envelope correlation against the real violin stem.
+   Baseline on piece 01 (no expression data, hand-tuned body):
+   LSD 1.354, envelope correlation 0.300 — the numbers to beat.
 5. Pizzicato (excitation swap), harmonics (touch-point reflection),
    torsional waves, sympathetic strings, other instruments of the family
    (viola, cello, bass are parameter sets, not new code).
