@@ -1,0 +1,15 @@
+[package]
+name = "violino-py"
+description = "Python bindings for violino-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "violino"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py39"] }
+violino-core = { path = "../violino-core" }

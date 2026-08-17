@@ -1,0 +1,11 @@
+[package]
+name = "violino-core"
+description = "Physical model of bowed strings: digital waveguide + friction-curve bow, headless and dependency-free"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords = ["violin", "physical-modeling", "waveguide", "dsp", "synthesizer"]
+categories = ["multimedia::audio"]
+
+[dependencies]

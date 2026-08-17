@@ -1,0 +1,7 @@
+/target
+violino-py/target
+__pycache__/
+*.wav
+*.pyc
+.venv/
+dist/
