@@ -58,6 +58,10 @@ cargo run -p violino-midi -- demo.mid demo.wav # render any SMF to WAV
 4. **Calibration pipeline**: analysis-by-synthesis against real violin
    recordings — optimize control curves per recording, then model parameters
    across recordings. The optimizer plays the role of the skilled player.
+   Phase 1: gradient-free (CMA-ES) over per-note control parameters with
+   the Rust engine as a black box. Phase 2: differentiable port of the
+   tick loop (PyTorch/JAX) to learn a MIDI-to-gesture player network and
+   calibrate physical constants by gradient.
    First piece exists: `tools/compare_real.py` renders the ground-truth
    notes of a Bach10 piece (real performance timing) and reports log-mel
    spectral distance and envelope correlation against the real violin stem.

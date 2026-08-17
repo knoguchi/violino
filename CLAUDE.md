@@ -32,6 +32,27 @@ and compare outputs — player held constant, engines differing. Hence the
 `violino-midi` SMF renderer with a SWAM-compatible CC mapping is the top
 roadmap item, and hand-written curves in `examples/phrase.rs` are a stopgap.
 
+## Calibration strategy (decided 2026-08-16)
+
+The chosen path is: keep the physical engine, learn the **player**.
+
+- **Phase 1 (next up)**: gradient-free optimization (CMA-ES or
+  Nelder-Mead) of per-note control parameters (expression, pressure
+  bonus, vibrato depth/rate, timing offsets) against a real recording,
+  using the Rust engine as a black box and the log-mel spectral distance
+  from `tools/compare_real.py` as the cost. Purpose: measure how far the
+  current engine can go with a good player — the engine's ceiling.
+- **Phase 2**: port the tick loop to PyTorch/JAX (~50 lines, everything
+  is differentiable: linear-interp delays, smooth friction, biquads).
+  Then (a) fit control curves by gradient, (b) train a small
+  MIDI-to-gesture "player network" end-to-end on Bach10/URMP pairs, and
+  (c) calibrate physical constants (friction shape, body modes) by
+  gradient. Train on short segments (per-note), not whole pieces (BPTT
+  over 1M steps is impractical).
+- Explicitly rejected: replacing the instrument with a neural net
+  (DDSP/MIDI-DDSP) — keep those as benchmarks only; NN residual
+  correction on the output — only to be considered after Phase 2.
+
 ## Quality bar and evaluation
 
 Do not evaluate sound quality by ear alone. The calibration pipeline
